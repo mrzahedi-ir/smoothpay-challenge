@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -14,7 +15,22 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::all();
+        foreach ($products as $product) {
+            $product->view_product = [
+                'href' => 'api/v1/categories/' . $product->id,
+                'method' => 'GET'
+            ];
+            foreach ($product->categories as $category) {
+                $product->category .= $category->name . ', ';
+            }
+        }
+
+        $response = [
+            'message' => 'List of all Products',
+            'products' => $products
+        ];
+        return response()->json($response, 200);
     }
 
     /**
@@ -36,7 +52,16 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        $product = Product::where('id', $id)->firstOrFail();
+        foreach ($product->categories as $category) {
+            $product->category .= $category->name . ', ';
+        }
+
+        $response = [
+            'message' => 'Product details',
+            'product' => $product
+        ];
+        return response()->json($response, 200);
     }
 
     /**
