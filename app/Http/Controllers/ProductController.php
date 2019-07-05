@@ -45,6 +45,7 @@ class ProductController extends Controller
             'name'  => 'required',
             'SKU'   => 'required',
             'price' => 'required',
+            'categories' => 'required',
         ]);
 
         $name = $request->input('name');
@@ -64,7 +65,7 @@ class ProductController extends Controller
                 'method' => 'GET'
             ];
             $message = [
-                'message' => 'Meeting created',
+                'message' => 'Product created',
                 'product' => $product
             ];
             return response()->json($message, 201);
@@ -105,7 +106,40 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'name'  => 'required',
+            'SKU'   => 'required',
+            'price' => 'required',
+            'categories' => 'required',
+        ]);
+
+        $name = $request->input('name');
+        $SKU = $request->input('SKU');
+        $price = $request->input('price');
+        $categories = $request->input('categories');
+
+        $product = Product::findOrFail($id);
+
+        $product->name = $name;
+        $product->SKU = $SKU;
+        $product->price = $price;
+
+        if (!$product->update()) {
+            return response()->json(['message' => 'Error during updating'], 404);
+        }
+
+        $product->categories()->sync($categories);
+        $product->view_product = [
+            'href' => 'api/v1/products/' . $product->id,
+            'method' => 'GET'
+        ];
+
+        $response = [
+            'message' => 'Product updated',
+            'product' => $product
+        ];
+
+        return response()->json($response, 200);
     }
 
     /**
