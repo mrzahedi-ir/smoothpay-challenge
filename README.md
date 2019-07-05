@@ -1,6 +1,16 @@
 PHP Developer Challenge
 ==============================
 
+## My development environment
+
+I use the same environment with Vagrant so I did not use Vagrant.
+
+* Ubuntu 16.04 (Xenial)
+* PHP 7.1
+* MySQL 5.7.26
+* Nginx 1.10.3
+* Composer 1.6.2
+
 ## Introduction
 
 Spicy Deli has started to expand their business and need a complete rewrite of their current online presence. They have asked you to build a simple cataloging system as a RESTful API so that they can integrate with mobile and desktop applications in the future.
