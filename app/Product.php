@@ -10,4 +10,6 @@ class Product extends Model
     {
         return $this->belongsToMany(Category::class);
     }
+
+    protected $fillable = ['name', 'SKU', 'price'];
 }

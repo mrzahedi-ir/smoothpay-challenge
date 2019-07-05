@@ -41,7 +41,39 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name'  => 'required',
+            'SKU'   => 'required',
+            'price' => 'required',
+        ]);
+
+        $name = $request->input('name');
+        $SKU = $request->input('SKU');
+        $price = $request->input('price');
+        $categories = $request->input('categories');
+
+        $product = new Product([
+            'name'  => $name,
+            'SKU'   => $SKU,
+            'price' => $price,
+        ]);
+        if ($product->save()) {
+            $product->categories()->sync($categories);
+            $product->view_product = [
+                'href' => 'api/v1/products/' . $product->id,
+                'method' => 'GET'
+            ];
+            $message = [
+                'message' => 'Meeting created',
+                'product' => $product
+            ];
+            return response()->json($message, 201);
+        }
+
+        $response = [
+            'msg' => 'Error during creation'
+        ];
+        return response()->json($response, 404);
     }
 
     /**
